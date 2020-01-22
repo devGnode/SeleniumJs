@@ -1,0 +1,36 @@
+{
+	
+	"bin":{
+		"firefox":    "C:\\Program Files\\Mozilla Firefox\\firefox",
+		"chrome":     null,
+		"opera":      null,
+		"msedge":     null
+		
+	},
+	 
+	"webDriver":{
+        
+		"remoteHost":"127.0.0.1",
+		"remotePort":4020,
+		
+		"gecko":{
+			"argv":["-vv"],
+			"bin":"c:\\nasm\\geckodriver",
+            "logLevel":null
+		},
+		"chrome":{
+			"argv":["--whitelisted-ips"],
+			"bin":"c:\\nasm\\chromedriver",
+            "logLevel":"ALL"
+		},
+		"opera":{
+			"argv":[],
+			"bin":null
+		},
+		"msedge":{
+			"argv":[],
+			"bin":null
+		}
+	}
+	
+}

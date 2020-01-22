@@ -1,0 +1,13 @@
+# IntellJ
+.idea
+*.yml
+*.xml
+
+# Test File
+test.*
+
+# log file
+*.log
+
+# webDriver
+#webDriver/
