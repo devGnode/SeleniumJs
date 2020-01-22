@@ -1,9 +1,9 @@
-const {GeckoDriver} = require("./socket/GeckoDriver.js");
-const {ChromeDriver} = require("./socket/ChromeDriver.js");
+const {GeckoDriver} = require("./import/GeckoDriver.js");
+const {ChromeDriver} = require("./import/ChromeDriver.js");
 
 const {Proxy}          = require("./lib/Proxy.js");
-const {FirefoxOptions} = require("./socket/options/FirefoxOptions.js");
-const {ChromeOptions}  = require("./socket/options/ChromeOptions.js");
+const {FirefoxOptions} = require("./import/options/FirefoxOptions.js");
+const {ChromeOptions}  = require("./import/options/ChromeOptions.js");
 
 (async()=>{
     var driver;
