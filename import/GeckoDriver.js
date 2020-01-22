@@ -11,7 +11,7 @@ const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 const {Window}              = require("./Window.js");
 
-const {WebDriverProcess}  = require("./WebDriverProcess.js");
+const {WebDriverProcess}  = require("../lib/WebDriverProcess.js");
 
 const WEB_BROWSER   = "FIREFOX";
 const BROWSER_TYPE  = "gecko";
