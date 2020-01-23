@@ -6,8 +6,9 @@
 # Test File
 test/*.js
 
-# log file
+# log file & config
 *.log
+config/*.json
 
 # webDriver
 #webDriver/
