@@ -1,14 +1,18 @@
 {
-  "name": "seleniumjs",
+  "author": "Maroder <looterofflux@gmail.com>",
+  "name": "selenium-js",
   "version": "1.0.0",
   "description": "webdriver with nodejs",
-  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devGnode/SeleniumJs.git"
+  },
   "directories": {
     "lib": "lib"
   },
+  "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.js"
   },
-  "author": "Maroder",
   "license": "ISC"
 }

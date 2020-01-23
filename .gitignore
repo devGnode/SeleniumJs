@@ -11,3 +11,7 @@ test.*
 
 # webDriver
 #webDriver/
+
+# anothers restrict
+.git
+
