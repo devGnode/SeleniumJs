@@ -1,8 +1,8 @@
 {
-  "author": "Maroder <looterofflux@gmail.com>",
-  "name": "selenium-js",
+  "author": "Maroder - <devgnode@gmail.com>",
+  "name": "webdriver-js-devgnode",
   "version": "1.0.0",
-  "description": "webdriver with nodejs",
+  "description": "Webdriver with nodejs front-office testing",
   "repository": {
     "type": "git",
     "url": "git://github.com/devGnode/SeleniumJs.git"
@@ -14,5 +14,8 @@
   "scripts": {
     "test": "mocha test/*.js"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "*"
+  }
 }
