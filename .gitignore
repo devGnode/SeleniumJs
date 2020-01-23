@@ -1,13 +1,22 @@
 # IntellJ
-.idea
+.idea/
 *.yml
 *.xml
 
 # Test File
-test.*
+test/*.js
 
-# log file
+# log file & config
 *.log
+config/*.json
 
 # webDriver
 #webDriver/
+
+# anothers restrict
+.git
+
+# node
+package-lock.json
+.node_modules/
+node_modules/

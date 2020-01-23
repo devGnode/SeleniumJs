@@ -11,7 +11,7 @@
 	"webDriver":{
         
 		"remoteHost":"127.0.0.1",
-		"remotePort":4020,
+		"remotePort":4444,
 		
 		"gecko":{
 			"argv":["-vv"],
