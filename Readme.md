@@ -99,7 +99,7 @@ import path :
 ```javascript
 const {GeckoDriver}  = require("./import/GeckoDriver.js");
 const {GeckoOptions} = require("./import/options/GeckoOptions.js");
-const {Proxy}        = require("./lib/Proxy.js");
+const {Proxy}        = require("./Proxy.js");
 
 var desiredCapabilities = (new GeckoOptions())
         .setBrowserName("firefox")
