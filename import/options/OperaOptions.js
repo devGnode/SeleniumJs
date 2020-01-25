@@ -16,15 +16,15 @@ class OperaOptions extends AbstractDriversOptions{
     constructor(){
         super();
     }
-    
+
+    // @return this
     setAcceptInsecureCerts(bool){
         this.setCapability("acceptInsecureCerts",bool);
         return this;
     }
-    
-    addExtensions(){
-        
-    }
+
+    // to do implemented
+    addExtensions(){ }
 }
 /***
     @export

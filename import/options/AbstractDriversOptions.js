@@ -15,22 +15,26 @@ class AbstractDriversOptions{
     constructor(){
         this.capabilities = {};
     }
-    
-    setBinary(bin){
-        this.capabilities.binary = bin;
-        return this;
-    }
-    
+
+    // @return this
     setCapability( capabilityName, value ){
         this.capabilities[capabilityName] = value;
         return this;
     }
-    
+
+    // @return this
+    setBinary(bin){
+        this.setCapability("binary",bin);
+        return this;
+    }
+
+    // @return this
     setProxy(proxyObject){
         this.capabilities.proxy = proxyObject.toJson();
         return this;
     }
-    
+
+    // @return this
     addArguments(argument){
        if(this.capabilities.args===undefined){
            this.capabilities.args = [argument];
@@ -41,12 +45,14 @@ class AbstractDriversOptions{
         
         return this;
     }
-    
+
+    // @return this
     setBrowserName(browser){
         this.capabilities.browserName = browser;
         return this;
     }
-    
+
+    // @return Object
     getCapabilities(){
         return this.capabilities;
     }
