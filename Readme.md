@@ -15,8 +15,8 @@ Description of seleniumJs
 ### Branch
 
 - release : Lastest stable version
-- develop : Repo to clone ( replace master )
-- test-integration : Branch to push the pulls requests + unit test file
+- develop : Repo to clone ( replace master ) 
+- test-integration : Branch for push unit test(s) file(s)
 
 ### installation 
 
