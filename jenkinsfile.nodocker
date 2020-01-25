@@ -8,7 +8,7 @@ import groovy.transform.Field
 
 timestamps{
     parameters{
-       gitParameter branchFilter: 'origin/(.*)', defaultValue: "${default_branch}", name: "BRANCH", type: "PT_BRANCH"
+       gitParameter branchFilter: 'origin/(.*)', defaultValue: "${default_branch}", name: 'BRANCH', type: 'PT_BRANCH'
        string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
     }
 
@@ -30,12 +30,21 @@ timestamps{
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                 sh "npm install"
                 testResult = sh(script: "npm test", returnValue: true )
-                if( testResult == 0 ){
+                if( testResult == null ){
                     println 'processing has terminate with code ${testResult}'
                 }else{
                     println "Failed deployment"
                     println "processing has terminate with code ${testResult}"
                 }
+            }
+        }
+
+        stage("NPM Deployment"){
+            if( testResult == null ){
+                println 'package deployment is in progress'
+            }else{
+                println "Failed deployment"
+                 println "processing has terminate with code ${testResult}"
             }
         }
 
