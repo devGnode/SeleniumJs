@@ -1,14 +1,22 @@
 {
-  "name": "seleniumjs",
+  "author": "Maroder - <devgnode@gmail.com>",
+  "name": "webdriver-js-devgnode",
   "version": "1.0.0",
-  "description": "webdriver with nodejs",
-  "main": "main.js",
+  "description": "Webdriver with nodejs front-office testing",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devGnode/SeleniumJs.git"
+  },
   "directories": {
     "lib": "lib"
   },
+  "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.js"
   },
-  "author": "Maroder",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "*",
+    "junit": "*"
+  }
 }

@@ -1,0 +1,43 @@
+#!/usr/bin/env groovy
+import groovy.transform.Field
+
+@Field def lib_repo_url     = "https://github.com/devGnode/lib-repo-groovy.git" as String
+@Field def git_repo_url     = "https://github.com/devGnode/SeleniumJs.git" as String
+@Field def testResult       = 0 as Integer
+@Field def default_branch   = "origin/develop" as String
+
+timestamps{
+    parameters{
+       gitParameter branchFilter: 'origin/(.*)', defaultValue: "${default_branch}", name: "BRANCH", type: "PT_BRANCH"
+       string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
+    }
+
+    node{
+
+        stage("Clean Workspace"){
+            println "[+] Cleaning Workspace"
+            cleanWs();
+        }
+
+        stage("Git Checkout"){
+            def branch = params.BRANCH.substring(params.BRANCH.indexOf("/")+1)
+
+            println "Checkout to ${branch} branch"
+            checkout scm
+        }
+
+        stage("Launched integration test"){
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                sh "npm install"
+                testResult = sh(script: "npm test", returnValue: true )
+                if( testResult == 0 ){
+                    println 'processing has terminate with code ${testResult}'
+                }else{
+                    println "Failed deployment"
+                    println "processing has terminate with code ${testResult}"
+                }
+            }
+        }
+
+    }
+}
