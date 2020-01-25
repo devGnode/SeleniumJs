@@ -31,7 +31,7 @@ timestamps{
                 sh "npm install"
                 testResult = sh(script: "npm test", returnValue: true )
                 if( testResult == null ){
-                    println 'processing has terminate with code ${testResult}'
+                    println "processing has terminate with code ${testResult}"
                 }else{
                     println "Failed deployment"
                     println "processing has terminate with code ${testResult}"
