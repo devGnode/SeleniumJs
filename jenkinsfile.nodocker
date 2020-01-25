@@ -40,11 +40,14 @@ timestamps{
         }
 
         stage("NPM Deployment"){
-            if( testResult == null ){
-                println 'package deployment is in progress'
-            }else{
-                println "Failed deployment"
-                 println "processing has terminate with code ${testResult}"
+         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                if( testResult == null ){
+                    println 'package deployment is in progress'
+                }else{
+                       error("Failed deployment")
+                    println "Failed deployment"
+                    println "processing has terminate with code ${testResult}"
+                }
             }
         }
 
