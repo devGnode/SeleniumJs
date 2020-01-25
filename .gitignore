@@ -5,9 +5,15 @@
 
 # Test File
 test.*
+config/*.json
 
 # log file
 *.log
 
 # webDriver
 #webDriver/
+
+# node
+package-lock.json
+.node_modules/
+node_modules/
