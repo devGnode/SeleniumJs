@@ -3,9 +3,6 @@
 *.yml
 *.xml
 
-# Test File
-test.*
-
 # log file & config
 *.log
 config/*.json
