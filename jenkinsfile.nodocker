@@ -4,7 +4,7 @@ import groovy.transform.Field
 @Field def lib_repo_url     = "https://github.com/devGnode/lib-repo-groovy.git" as String
 @Field def git_repo_url     = "https://github.com/devGnode/SeleniumJs.git" as String
 @Field def testResult       = 0 as Integer
-@Field def default_branch   = "origin/develop" as String
+@Field def default_branch   = "develop" as String
 
 timestamps{
     parameters{
