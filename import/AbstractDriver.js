@@ -13,71 +13,81 @@
  Must don't use protected method outside of 
  this framework.
 */
-const {ShellExecutionUtils} = require("../lib/utils/ShellExecutionUtils.js");
+const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
+const {Manage}              = require("../lib/Manage");
+const {Navigate}            = require("../lib/Navigate.js");
+const {WebElement}          = require("../lib/WebElement.js");
 const {Utils}               = require("../lib/utils/Utils.js");
+
+var webDriverRestApi = WebDriverRestApi.getInstance();
 
 class AbstractDriver {
     
     // @private attribute
-    constructor(browser){
-        this.browserName = browser; 
-        this.command     = null;
-        this.argv        = null;
-        this.shellHandle = null;
-        this.isLaunched  = false;
-
-        //
-        this.process    = null;
+    constructor(capabilities){
+        this.session    = null;
+        this.Hprocess   = null;
+        this.Hmanage    = new Manage();
+        this.Hnavigate  = new Navigate();
+        this.opts       = capabilities || {getCapabilities:function(){return {};}};
     }
     
-    // to rewiew
+    // :void
     async open( ){
-        /*var slf = this;
-        if( !this.isLaunched ){
-           await ShellExecutionUtils.launchWebDriver(this)
-            .catch(shellHandle=> this.stderr("[-] something wrong with the shell execution !") )
-            .then(shellHandle=>{
-
-                if(this.getShellHandle())
-                this.stdout(
-                    Utils.format("[+] %s webDriver has been lauched pid:=%s ",this.constructor.name,this.getShellHandle().pid)
-                );;
-           }); 
-            this.isLaunched = true;*/
+        try {
             // Need to wait, sometime
             // webDrive didn't yet launched
-            await this.process.launch();
+            await this.Hprocess.launch();
             await Utils.sleep(1000);
-            await this.window.open(this.opts);
-       // }
+            await this.launch(this.opts);
+            delete this.opts;
+
+            // @private
+            // not really a good practice closure
+            // the legacy of an old development method
+            this.Hnavigate.getSessionId = this.Hmanage.getSessionId = this.Hmanage.window().getSessionId = (function(slf) {
+                return function () {
+                    return slf.session;
+                };
+            })(this);
+
+        }catch (e) {
+            console.log(e);
+        }
     }
-    
+
     // @protected
-    // :string
-    getShellCommandLine(){
-        return this.command;
+    // :void
+    async launch(capabilities){
+        let response;
+        if((response = await webDriverRestApi.open(capabilities)).getStatusCode() === 200 ){
+            try{
+                this.session = response.getBodyAsObject().value.sessionId;
+            }catch(e){}
+            return response.getBodyAsObject();
+        }
     }
-    
-    // @protected
-    // :array
-    getShellArgv(){
-        return this.argv;
+
+    // :WebDriverProcess
+    process(){
+        return this.Hprocess;
     }
-    
-    // @protected
-    // :handle
-    getShellHandle(){
-        return this.shellHandle;
+
+    // :Options
+    manage(){
+        return this.Hmanage;
     }
-    
-    // :string
-    getBrowserName(){
-        return this.browserName;    
+
+    // :Navigate
+    navigate( ){
+       return this.Hnavigate;
     }
-    
     // :boolean
     killProcess(){
-        return this.shellHandle.kill("SIGINT");
+        return this
+            .process()
+            .getShellHandle()
+            .kill("SIGINT");
     }
     
     // @async
@@ -86,25 +96,80 @@ class AbstractDriver {
         await this.window.delete();
         this.killMessage(this.process.killProcess());
     }
-    
-    // @protected
-    // :void
-    killMessage(data){
-        console.log("[+] kill message ", `${data}`);
-    }
-    
-    // @protected
-    // :void
-    stdout(data){
-        console.log(`${data}`);
+
+    /***
+     *
+     * @param url
+     * @returns {Promise<Response>}
+     */
+    async get(url){
+        let response;
+        if((response = await webDriverRestApi.get(this.session,url === null || url.length === 0 ? "about:blank" : url)).getStatusCode === 200 ){
+            return response.getBodyAsObject();
+        }
     }
 
-    // @protected
-    // :void
-    stderr(data){
-        this.stdout(data);
+    // @returns String
+    async getCurrentUrl(){
+        let response;
+        if((response = await webDriverRestApi.getUrl(this.session)).getStatusCode() === 200 ){
+            return response.getBodyAsObject().value;
+        }
+
+        return "";
     }
-    
+
+    // @returns String
+    async getTitle(){
+        let response;
+        if((response = await webDriverRestApi.getTitle(this.session)).getStatusCode() === 200 ){
+            return response.getBodyAsObject( ).value;
+        }
+
+        return "";
+    }
+
+    async findElements(By){
+        return new WebElement(this,{element:""});
+    }
+
+    async findElement(By){
+        return new WebElement(this,{element:[]});
+    }
+
+    // @returns String
+    // @Unstable
+    async getPageSource(){
+        let response;
+        if((response = await webDriverRestApi.getPageSource(this.session)).getStatusCode() === 200 ){
+            /***
+             * UnhandledPromiseRejectionWarning: SyntaxError: Unexpected end of JSON input
+             */
+            return response.getBodyAsObject( ).value;
+        }
+        return "";
+    }
+
+    async close(){
+
+    }
+
+    async quit(){
+
+    }
+
+    async getWindowHandles( ){
+
+    }
+
+    async getWindowHandle(){
+
+    }
+
+    async switchTo(){
+
+    }
+
 }
 /***
     @export

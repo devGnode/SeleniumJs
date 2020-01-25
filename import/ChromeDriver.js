@@ -7,44 +7,54 @@
 */
 const {AbstractDriver}      = require("./AbstractDriver.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
-const {Window}              = require("./Window.js");
-const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
+const {WebDriverProcess}    = require("../lib/WebDriverProcess");
+const {WebElement}          = require("../lib/WebElement.js");
 
-console.log(Window);
 const WEB_BROWSER = "chrome";
 
 class ChromeDriver extends AbstractDriver{
     
     constructor( options ){
-        super(WEB_BROWSER.toLowerCase());
-        
+        super(options);
+
         let properties = PropertiesFile.getInstance(),
             chrome      = properties.getWebdriverConfig(WEB_BROWSER.toLowerCase());
-        
-        this.command = chrome.bin;
-        this.argv    = []; 
-        
-        chrome.argv.forEach(value=>this.argv.push(value));
+        var args = [];
+
+        chrome.argv.forEach(value=>args.push(value));
         [
          "--port="+properties.getPort(),
         
-        ].forEach(value=>this.argv.push(value));
-        
-        this.window = Window.build( WebDriverRestApi.getInstance() ); 
-        this.opts = options;
+        ].forEach(value=>args.push(value));
+
+        this.Hprocess    = new WebDriverProcess( chrome.bin, args );
+
     }
-    
+
     // @Override
-    stdout(data){
-        console.log(`${data}`);
+    // @private
+    // :void
+    async launch(capabilities){
+        try {
+            this.session = (await super.launch(capabilities)).sessionId;
+        }catch(e){
+            console.log(e);
+        }
     }
-    
-    stdErr(data){
-        console.log("Error");
+
+    // @Override
+    // :WebElement
+    async findElements(){
+        return new WebElement(this,{element:""});
+    }
+
+    // @Override
+    // :WebElement
+    async findElement(){
+        return new WebElement(this,{element:[]});
     }
     
 }
-
 /*
     @export
 */
