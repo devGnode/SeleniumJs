@@ -42,7 +42,7 @@ timestamps{
         stage("NPM Deployment"){
          catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                 if( testResult == null ){
-                    println 'package deployment is in progress'
+                    println "package deployment is in progress"
                 }else{
                        error("Failed deployment")
                     println "Failed deployment"
