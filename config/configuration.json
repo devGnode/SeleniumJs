@@ -24,8 +24,9 @@
             "logLevel":"ALL"
 		},
 		"opera":{
-			"argv":[],
-			"bin":null
+			"argv":["--whitelisted-ips"],
+			"bin":"c:\\nasm\\operadriver",
+			"logLevel":null
 		},
 		"msedge":{
 			"argv":[],

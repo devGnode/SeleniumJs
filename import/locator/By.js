@@ -1,5 +1,5 @@
 /***
- public static class By
+ public class By
 
  @author    :   Maroder
  @date      :   17/01/2020
@@ -23,43 +23,53 @@ class By{
         this.using = method;
         this.value = value;
     }
-    
+
+    // @return String
     getUsing( ){
         return this.using;
     }
-    
+
+    // @return String
     getValue( ){
         return this.value;
     }
-    
+
+    // @return By
     static id(id){
         return new By(ID,id);
     }
-    
+
+    // @return By
     static className(classname){
         return new By(CLASS_NAME,classname);
     }
-    
+
+    // @return By
     static tagName(tagname){
         return new By(TAG_NAME,tagname);
     }
-    
+
+    // @return By
     static xpath(xpath){
         return new By(XPATH,xpath);
     }
-    
+
+    // @return By
     static cssSelector(cssSelector){
         return new By(CSS_SELECTOR,cssSelector);
     }
-    
+
+    // @return By
     static linkText(linkText){
         return new By(LINK_TXT,linkText);
     }
-    
+
+    // @return By
     static partialLinkText(linkText){
         return new By(PARTIAL_LINK_TXT,linkText);
     }
 
+    // @return By
     static name(name){
         return new By(NAME,name);
     }

@@ -16,21 +16,22 @@ class FirefoxOptions extends AbstractDriversOptions{
     constructor(){
         super();
     }
-    
+
+    // @return this
     setAcceptUntrustedCertificates(bool){
         this.setCapability("acceptInsecureCerts",bool);
         return this;
     }
-    
+
+    // @return this
     setHeadless(bool){
         this.setCapability("moz:headless",bool);
         this.setCapability("headless",bool);
         return this;
     }
-    
-    addExtensions(){
-        
-    }
+
+    // to do implemented
+    addExtensions(){ }
     
 }
 /***
