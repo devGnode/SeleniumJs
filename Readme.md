@@ -9,32 +9,39 @@ Description of seleniumJs
  For use this framework/package you should to install nodeJs on your platform
 
 - nodeJs >= 10.16.3
-- [https://phoenixnap.com/kb/install-node-js-npm-on-windows]("https://phoenixnap.com/kb/install-node-js-npm-on-windows")
-- [https://nodejs.org/en/]("https://nodejs.org/en/")
+- [phoenixnap.com/kb/install-node-js-npm-on-windows](https://phoenixnap.com/kb/install-node-js-npm-on-windows)
+- [nodejs.org/en/](https://nodejs.org/en/)
 
+### Branch
 
-### Import from npm package
+- release : Lastest stable version
+- develop : Repo to clone ( replace master )
+- test-integration : Branch to push the pulls requests + unit test file
+
+### installation 
+
+#### Import from npm package
 
 ``
-$ npm install seleniumJs
+$ npm install webdriver-js-devgnode
 ``
 
 ```javascript
-const seleniumJs = require("seleniumJs");
+const seleniumJs = require("webdriver-js-devgnode");
 
 seleniumJs.GeckoDriver;
 seleniumJs.GeckoOptions;
 
 ```
 
-### From git clone
+#### From git clone
 
 ``
-$ git clone https://github.com/devGnode
+$ git clone https://github.com/devGnode/seleniumJs.git
 ``
 
 ```javascript
-const seleniumJs = require("seleniumJs");
+const seleniumJs = require("./lib/main.js");
 ```
 
 ## Import Object
