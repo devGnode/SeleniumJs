@@ -1,0 +1,60 @@
+#!/usr/bin/env groovy
+import groovy.transform.Field
+
+@Field def lib_repo_url = "https://github.com/devGnode/lib-repo-groovy.git" as String
+@Field def git_repo_url = "https://github.com/devGnode/SeleniumJs.git" as String
+@Field def testResult   = 0 as Integer
+
+timestamps{
+    parameters{
+        string( name : "BRANCH", defaultValue: 'origin/develop', description: '' )
+        string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
+    }
+
+    node{
+
+        stage("Clean Workspace"){
+            println "[+] Cleaning Workspace"
+            cleanWs();
+        }
+
+        docker.withRegistry('https://registry.hub.docker.com/', 'hub-docker') {
+
+            docker.image('registry.hub.docker.com/marcotest01/jenkins_test01:v1.0').inside("-u root") {
+
+                stage("Git Checkout"){
+                    def branch = params.BRANCH.substring(params.BRANCH.indexOf("/")+1)
+                    def file   = testFile.substring(testFile.indexOf("/")+1)
+
+                    println "Checkout to ${branch} branch - ${file}"
+                    sh "ls -la"
+                    checkout scm
+                   /*withCredentials([file( credentialsId: "${file}", variable: 'CHMOD_MAIN')]){
+                        sh "cp ${CHMOD_MAIN} test/$file"
+                        //sh 'chmod ugo+x ${CHMOD_MAIN}'
+                    }*/
+                }
+
+                stage("Launched integration test"){
+                    sh "npm install"
+                    testResult = sh(script: "mvn --version", returnValue: true )
+                    if( testResult >= 1 ){
+                        println 'Failed deployment'
+                        println 'processing has terminate with code ${testResult}'
+                    }else{
+                      println 'processing has terminate with code ${testResult}'
+                    }
+
+                }
+
+                stage("NPM Deployment"){
+                    if(testResult==1){
+                        println 'Failed deployment'
+                    }else{
+                        println 'package deployment in progress'
+                    }
+                }
+            }
+        }
+    }
+}
