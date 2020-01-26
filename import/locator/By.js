@@ -36,12 +36,12 @@ class By{
 
     // @return By
     static id(id){
-        return new By(ID,id);
+        return new By(CSS_SELECTOR,"#"+id);
     }
 
     // @return By
     static className(classname){
-        return new By(CLASS_NAME,classname);
+        return new By(CSS_SELECTOR,"."+classname);
     }
 
     // @return By
