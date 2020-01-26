@@ -14,6 +14,7 @@
  this framework.
 */
 const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
+const {JavascriptExecutor}  = require("../lib/js/JavascriptExecutor.js");
 const {Manage}              = require("../lib/Manage");
 const {Navigate}            = require("../lib/Navigate.js");
 const {WebElement}          = require("../lib/WebElement.js");
@@ -82,12 +83,10 @@ class AbstractDriver {
     navigate( ){
        return this.Hnavigate;
     }
+
     // :boolean
     killProcess(){
-        return this
-            .process()
-            .getShellHandle()
-            .kill("SIGINT");
+        return this.process().getShellHandle().kill("SIGINT");
     }
     
     // @async
@@ -170,6 +169,30 @@ class AbstractDriver {
 
     }
 
+    // @return Object
+    async executeScript(/*String , Object ...*/){
+        var javascriptExecutorData, response,data;
+
+        try{
+            javascriptExecutorData = JavascriptExecutor.executeScript.apply(null,arguments);
+            if((response = await webDriverRestApi.executeSyncScript(this.session,javascriptExecutorData)).getStatusCode() === 200 ){
+
+                // may be a list of DomElements
+                if( (data = response.getBodyAsObject( ).value) instanceof Array )
+                return data.map(value=> typeof value === "object" ? new WebElement(this,value) : value );
+                // may a simple DomElement
+                else if(typeof data === "object"){
+                    return new WebElement(this,data);
+                }
+                // else
+                // boolean, String, Number
+                return data;
+            }
+        }catch(e){
+            // TypeError  missing argument to JavascriptExecutor
+            console.log(e);
+        }
+    }
 }
 /***
     @export
