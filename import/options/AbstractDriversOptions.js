@@ -31,7 +31,7 @@ class AbstractDriversOptions{
     }
 
     // @return this
-    setPgeLoadTimeout(ms){
+    setPageLoadTimeout(ms){
         this.capabilities.timeouts.pageLoad = ms;
         return this;
     }
