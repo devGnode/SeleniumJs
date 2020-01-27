@@ -1,6 +1,18 @@
 /***
  public class ChromeOptions
- 
+
+ Chrome cli arguments documentation :
+    https://peter.sh/experiments/chromium-command-line-switches/
+    + --headless
+    + --enable-automation
+    + --user-agent
+
+ Chrome options documentation :
+    https://chromedriver.chromium.org/capabilities
+    + args          : Array chrome cli arguments
+    + binary        : path to chrome app
+    + extensions
+
  @author    :   Maroder
  @date      :   17/01/2020
  @licence   :   GNU/GPL
@@ -15,6 +27,9 @@ class ChromeOptions extends AbstractDriversOptions{
     
     constructor(){
         super();
+        this.capabilities["goog:chromeOptions"] = {
+          args:[]
+        };
     }
 
     // @return this
@@ -23,11 +38,6 @@ class ChromeOptions extends AbstractDriversOptions{
         return this;
     }
 
-    // @return this
-    setHeadless(bool){
-        this.setCapability("headless",bool);
-        return this;
-    }
 
     // @return this
     setAcceptSslCerts(bool){
@@ -36,20 +46,30 @@ class ChromeOptions extends AbstractDriversOptions{
     }
 
     // @return this
-    // @Override
-    addArguments(argument){
-       if(this.capabilities["goog:chromeOptions"] === undefined)
-            (this.capabilities["goog:chromeOptions"] = {}).args = [argument];
-       else
-        if( !this.capabilities["goog:chromeOptions"].args.map(value=>value===argument)[0] ){
-            this.capabilities["goog:chromeOptions"].args.push(argument);
-        }
-        
+    setHeadless(bool){
+        super.addArguments("--headless","goog:chromeOptions");
         return this;
     }
 
-    // to do implemented
-    addExtensions(){  }
+    setEnabledAutomationArgs(){
+        super.addArguments("--enable-automation");
+        return this;
+    }
+
+    // @Override
+    setBinary(binPath) {
+        this.capabilities["goog:chromeOptions"].binary = binPath;
+        return this;
+    }
+
+    // @return this
+    // @Override
+    addArguments(){
+        Array
+            .from(arguments)
+            .forEach(args=>super.addArguments(args,"goog:chromeOptions"));
+        return this;
+    }
 }
 /***
     @export
