@@ -4,6 +4,9 @@
  Opera commands line cli documentation:
     https://peter.sh/experiments/chromium-command-line-switches/
 
+ Opera capabilities options documentation :4
+    https://sny.no/2011/10/capabilities
+
  @author    :   Maroder
  @date      :   17/01/2020
  @licence   :   GNU/GPL
