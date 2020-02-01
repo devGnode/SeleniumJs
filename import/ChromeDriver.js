@@ -9,16 +9,18 @@ const {AbstractDriver}      = require("./AbstractDriver.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {WebDriverProcess}    = require("../lib/WebDriverProcess");
 const {WebElement}          = require("../lib/WebElement.js");
-
-const WEB_BROWSER = "chrome";
+const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 
 class ChromeDriver extends AbstractDriver{
-    
+
+    static WEB_BROWSER = "CHROME";
+    static #API        = WebDriverRestApi.getInstance();
+
     constructor( options ){
         super(options);
 
         let properties = PropertiesFile.getInstance(),
-            chrome      = properties.getWebdriverConfig(WEB_BROWSER.toLowerCase());
+            chrome      = properties.getWebdriverConfig(ChromeDriver.WEB_BROWSER.toLowerCase());
         var args = [];
 
         chrome.argv.forEach(value=>args.push(value));
@@ -42,18 +44,6 @@ class ChromeDriver extends AbstractDriver{
         }
     }
 
-    // @Override
-    // :WebElement
-    async findElements(){
-        return new WebElement(this,{element:""});
-    }
-
-    // @Override
-    // :WebElement
-    async findElement(){
-        return new WebElement(this,{element:[]});
-    }
-    
 }
 /*
     @export
