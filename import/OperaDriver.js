@@ -9,16 +9,18 @@
 const {AbstractDriver}      = require("./AbstractDriver.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {WebDriverProcess}    = require("../lib/WebDriverProcess.js");
-
-const WEB_BROWSER   = "OPERA";
+const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 
 class OperaDriver extends AbstractDriver{
+
+    static #API         = WebDriverRestApi.getInstance();
+    static WEB_BROWSER  = "OPERA";
 
     constructor( options ){
         super(options);
 
         let properties = PropertiesFile.getInstance(),
-            opera      = properties.getWebdriverConfig(WEB_BROWSER.toLowerCase());
+            opera      = properties.getWebdriverConfig(OperaDriver.WEB_BROWSER.toLowerCase());
         var args = [];
 
         opera.argv.forEach(value=>args.push(value));
