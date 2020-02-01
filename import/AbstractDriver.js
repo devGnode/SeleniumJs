@@ -4,15 +4,10 @@
  @date      :   17/01/2020
  @licence   :   GNU/GPL
  @version   :   1.0
- 
- public method :
-    getBrowserName - config parameter of your started config
-    killProcess    - killing force webdriver process
-    exit           - exit webbrowser and then kill shell process
-    
- Must don't use protected method outside of 
- this framework.
+
 */
+"use strict";
+
 const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 const {JavascriptExecutor}  = require("../lib/js/JavascriptExecutor.js");
 const {Manage}              = require("../lib/Manage");
@@ -20,17 +15,23 @@ const {Navigate}            = require("../lib/Navigate.js");
 const {WebElement}          = require("../lib/WebElement.js");
 const {Utils}               = require("../lib/utils/Utils.js");
 
-var webDriverRestApi = WebDriverRestApi.getInstance();
-
 class AbstractDriver {
-    
-    // @private attribute
+
+    static #API  = WebDriverRestApi.getInstance();
+
+    // private
+    #Hmanage;
+    #Hnavigate;
+
+    // protected
+    session     = null;
+    Hprocess    = null;
+    opts        = null;
+
     constructor(capabilities){
-        this.session    = null;
-        this.Hprocess   = null;
-        this.Hmanage    = new Manage();
-        this.Hnavigate  = new Navigate();
-        this.opts       = capabilities || {getCapabilities:function(){return {};}};
+        this.#Hmanage    = new Manage();
+        this.#Hnavigate  = new Navigate();
+        this.opts        = capabilities || {getCapabilities:function(){return {};}};
     }
     
     // :void
@@ -46,7 +47,10 @@ class AbstractDriver {
             // @private
             // not really a good practice closure
             // the legacy of an old development method
-            this.Hnavigate.getSessionId = this.Hmanage.getSessionId = this.Hmanage.window().getSessionId = (function(slf) {
+            this.#Hmanage.getSessionId =
+            this.#Hnavigate.getSessionId =
+            this.#Hmanage.timeouts().getSessionId =
+            this.#Hmanage.window().getSessionId = (function(slf) {
                 return function () {
                     return slf.session;
                 };
@@ -61,100 +65,147 @@ class AbstractDriver {
     // :void
     async launch(capabilities){
         let response;
-        if((response = await webDriverRestApi.open(capabilities)).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.open(capabilities)).getStatusCode() === 200 ){
             try{
                 this.session = response.getBodyAsObject().value.sessionId;
             }catch(e){}
             return response.getBodyAsObject();
         }
+        // NoSuchWindow
+        throw new Error(response.getError());
     }
 
-    // :WebDriverProcess
+    /***
+     * @returns {Hprocess}
+     */
     process(){
         return this.Hprocess;
     }
 
-    // :Options
+    /***
+     * @returns {Hmanage}
+     */
     manage(){
-        return this.Hmanage;
+        return this.#Hmanage;
     }
 
-    // :Navigate
+    /***
+     * @returns {Navigate}
+     */
     navigate( ){
-       return this.Hnavigate;
+       return this.#Hnavigate;
     }
 
-    // :boolean
+    /***
+     * @returns {boolean}
+     */
     killProcess(){
-        return this.process().getShellHandle().kill("SIGINT");
-    }
-    
-    // @async
-    // :boolean
-    async exit(){
-        await this.window.delete();
-        this.killMessage(this.process.killProcess());
+        return this.process().killProcess();
     }
 
     /***
      *
      * @param url
-     * @returns {Promise<Response>}
+     * @returns {Response}
      */
     async get(url){
         let response;
-        if((response = await webDriverRestApi.get(this.session,url === null || url.length === 0 ? "about:blank" : url)).getStatusCode === 200 ){
-            return response.getBodyAsObject();
+        if((response = await AbstractDriver.#API.get(this.session,url === null || url.length === 0 ? "about:blank" : url)).getStatusCode() === 200 ){
+            return void 0;
         }
+        // NoSuchWindow
+        // ff : value.error, other : value.message
+        throw new Error(response.getError());
     }
 
-    // @returns String
+    /***
+     * @returns {string}
+     */
     async getCurrentUrl(){
         let response;
-        if((response = await webDriverRestApi.getUrl(this.session)).getStatusCode() === 200 ){
-            return response.getBodyAsObject().value;
+        if((response = await AbstractDriver.#API.getUrl(this.session)).getStatusCode() === 200 ){
+            return response.getBodyAsObject().value || "";
         }
-
-        return "";
+        // NoSuchWindow
+        throw new Error(response.getError());
     }
 
-    // @returns String
+    /***
+     * @returns {string}
+     */
     async getTitle(){
         let response;
-        if((response = await webDriverRestApi.getTitle(this.session)).getStatusCode() === 200 ){
-            return response.getBodyAsObject( ).value;
+        if((response = await AbstractDriver.#API.getTitle(this.session)).getStatusCode() === 200 ){
+            return response.getBodyAsObject( ).value || "";
         }
-
-        return "";
+        // NoSuchWindow
+        throw new Error(response.getError());
     }
 
+    /***
+     * @param By
+     * @returns {Array<WebElement>}
+     */
     async findElements(By){
-        return new WebElement(this,{element:""});
+        let response;
+        if((response = await AbstractDriver.#API.findElements(this.session,By)).getStatusCode()===200){
+            return Array.from(
+                response
+                    .getBodyAsObject()
+                    .value
+                    .map(targetElement=> new WebElement(this,targetElement))
+            );
+        }
+        // NoSuchWindow
+        // NoSuchElement
+        throw new Error(response.getError());
     }
 
+    /***
+     * @param By
+     * @returns {WebElement}
+     */
     async findElement(By){
-        return new WebElement(this,{element:[]});
+        let response;
+        if((response=await AbstractDriver.#API.findElement(this.session,By)).getStatusCode()===200){
+            return new WebElement(this,response.getBodyAsObject().value);
+        }
+        // NoSuchWindow
+        // NoSuchElement
+        throw new Error(response.getError());
     }
 
-    // @returns String
-    // @Unstable
+    /***
+      UnhandledPromiseRejectionWarning: SyntaxError: Unexpected end of JSON input
+      @Unstable
+      @Deprecated
+      @returns {String}
+     */
     async getPageSource(){
         let response;
-        if((response = await webDriverRestApi.getPageSource(this.session)).getStatusCode() === 200 ){
-            /***
-             * UnhandledPromiseRejectionWarning: SyntaxError: Unexpected end of JSON input
-             */
+        if((response = await AbstractDriver.#API.getPageSource(this.session)).getStatusCode() === 200 ){
             return response.getBodyAsObject( ).value;
         }
-        return "";
+        // NoSuchWindow
+        throw new Error(response.getError());
     }
 
     async close(){
 
     }
 
+    /***
+     * @returns {boolean}
+     */
     async quit(){
-
+        if(( await AbstractDriver.#API.deleteSession(this.session)).getStatusCode()===200){
+            try {
+                this.process()
+                    .killMessage("process has terminate : "+this.killProcess());
+            }catch (e) {}
+            return true;
+        }
+        return false;
     }
 
     async getWindowHandles( ){
@@ -169,13 +220,15 @@ class AbstractDriver {
 
     }
 
-    // @return Object
+    /***
+     * @returns {Array<WebElement>|WebElement|*}
+     */
     async executeScript(/*String , Object ...*/){
         var javascriptExecutorData, response,data;
 
         try{
             javascriptExecutorData = JavascriptExecutor.executeScript.apply(null,arguments);
-            if((response = await webDriverRestApi.executeSyncScript(this.session,javascriptExecutorData)).getStatusCode() === 200 ){
+            if((response = await AbstractDriver.#API.executeSyncScript(this.session,javascriptExecutorData)).getStatusCode() === 200 ){
 
                 // may be a list of DomElements
                 if( (data = response.getBodyAsObject( ).value) instanceof Array )
@@ -184,7 +237,7 @@ class AbstractDriver {
                 else if(typeof data === "object"){
                     return new WebElement(this,data);
                 }
-                // else
+                // another data
                 // boolean, String, Number
                 return data;
             }
@@ -192,6 +245,14 @@ class AbstractDriver {
             // TypeError  missing argument to JavascriptExecutor
             console.log(e);
         }
+        //ScriptTimeout
+        //JavaScriptError
+        //NoSuchWindow
+        throw new Error(response.getError());
+    }
+
+    async executeAsyncScript(){
+
     }
 }
 /***
