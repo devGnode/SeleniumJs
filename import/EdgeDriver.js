@@ -1,5 +1,5 @@
 /***
- public class OperaDriver
+ public class MsEdge
 
  @author    :   Maroder
  @date      :   02/02/2020
@@ -34,7 +34,6 @@ class EdgeDriver extends AbstractDriver{
     // :void
     async launch(capabilities) {
         try {
-            console.log("123456464646464664645");
             this.session = (await super.launch(capabilities)).sessionId;
         } catch (e) {
             console.log(e);
