@@ -11,7 +11,7 @@
 	"webDriver":{
         
 		"remoteHost":"127.0.0.1",
-		"remotePort":4444,
+		"remotePort":4448,
 		
 		"gecko":{
 			"argv":["-vv"],
@@ -19,12 +19,12 @@
             "logLevel":null
 		},
 		"chrome":{
-			"argv":["--whitelisted-ips"],
+			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":"c:\\nasm\\chromedriver",
             "logLevel":"ALL"
 		},
 		"opera":{
-			"argv":["--whitelisted-ips"],
+			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":"c:\\nasm\\operadriver",
 			"logLevel":null
 		},
