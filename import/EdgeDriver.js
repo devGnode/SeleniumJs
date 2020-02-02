@@ -23,7 +23,6 @@ class EdgeDriver extends AbstractDriver{
 
         edge.argv.forEach(value=>args.push(value));
         [
-            //"--binary "+properties.getBrowserBinary("msedge"),
             "--port="+properties.getPort()
         ].forEach(value=>args.push(value));
 
