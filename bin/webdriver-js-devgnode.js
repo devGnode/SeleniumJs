@@ -15,7 +15,7 @@ module.exports  = {
     ChromeDriver     : require("../import/ChromeDriver.js"),
     GeckoDriver      : require("../import/GeckoDriver.js"),
     OperaDriver      : require("../import/OperaDriver.js"),
-    // EdgesDriver   : require("../import/EdgeDriver.js"),
+    EdgeDriver       : require("../import/EdgeDriver.js"),
 
     /***
      * @Locator

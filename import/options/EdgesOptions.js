@@ -1,7 +1,7 @@
 /***
  public class EdgeOptions
 
- MsEdge Web Api documentation :
+ MsEdge Web Api documentation : version >= 79
  https://docs.microsoft.com/en-us/microsoft-edge/webdriver
 
  @author    :   Maroder
@@ -18,16 +18,27 @@ class EdgeOptions extends AbstractDriversOptions{
     
     constructor(){
         super();
+        this.capabilities["ms:edgeOptions"] = {
+            args:[]
+        };
     }
 
     // @Override
-    setBinary(bin){ return this; }
+    setBinary(binPath) {
+        this.capabilities["ms:edgeOptions"].binary = binPath;
+        return this;
+    }
 
+    // not supported
     // @Override
     setProxy(bin){ return this; }
 
     // @Override
-    addArguments(argument,optionsName){ return this; }
+    addArguments(argument,optionsName){ Array
+        .from(arguments)
+        .forEach(args=>super.addArguments(args,"ms:edgeOptions"));
+        return this;
+    }
 
 }
 /***

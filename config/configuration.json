@@ -4,7 +4,7 @@
 		"firefox":    "C:\\Program Files\\Mozilla Firefox\\firefox",
 		"chrome":     null,
 		"opera":      null,
-		"msedge":     null
+		"msedge":     "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 		
 	},
 	 
@@ -26,11 +26,12 @@
 		"opera":{
 			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":"c:\\nasm\\operadriver",
-			"logLevel":null
+			"logLevel":"ALL"
 		},
 		"msedge":{
-			"argv":[],
-			"bin":null
+			"argv":["--whitelisted-ips"],
+			"bin":"c:\\nasm\\msedgedriver",
+			"logLevel":null
 		}
 	}
 	
