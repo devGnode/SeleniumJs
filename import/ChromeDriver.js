@@ -8,13 +8,10 @@
 const {AbstractDriver}      = require("./AbstractDriver.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {WebDriverProcess}    = require("../lib/WebDriverProcess");
-const {WebElement}          = require("../lib/WebElement.js");
-const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 
 class ChromeDriver extends AbstractDriver{
 
     static WEB_BROWSER = "CHROME";
-    static #API        = WebDriverRestApi.getInstance();
 
     constructor( options ){
         super(options);
