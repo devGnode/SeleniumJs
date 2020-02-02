@@ -108,7 +108,7 @@ let driver = new GeckoDriver();
 
 import path :
 ``
- ./import/
+ ./import/options
 ``
 
 - GeckoOptions
@@ -131,7 +131,7 @@ Options with proxy :
 
 import path :
 ``
- ./lib
+ ./lib/import
 ``
 
 - Proxy
