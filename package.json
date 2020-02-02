@@ -1,7 +1,7 @@
 {
   "author": "Maroder - <devgnode@gmail.com>",
   "name": "webdriver-js-devgnode",
-  "version": "1.0.0",
+  "version": "1.0.9",
   "description": "Webdriver with nodejs front-office testing",
   "repository": {
     "type": "git",
@@ -10,12 +10,15 @@
   "directories": {
     "lib": "lib"
   },
-  "main": "lib/main.js",
+  "main": "bin/webdriver-js-devgnode.js",
   "scripts": {
     "test": "mocha test/*.js"
   },
   "license": "ISC",
   "devDependencies": {
     "mocha": "*"
+  },
+  "bin": {
+    "webdriver-js-devgnode": "./bin/Webdriver-js-devgnode.js"
   }
 }
