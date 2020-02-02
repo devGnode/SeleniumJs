@@ -5,7 +5,7 @@
 
 # log file & config
 *.log
-config/*.json
+#config/*.json
 
 # webDriver
 #webDriver/
@@ -17,3 +17,6 @@ config/*.json
 package-lock.json
 .node_modules/
 node_modules/
+
+# perso
+main.js
