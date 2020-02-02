@@ -1,16 +1,16 @@
-<img src="https://img.shields.io/badge/Version-1.0.0-yellow"/>
-
 # seleniumJs
 
-Dev in progress....
+<img src="https://img.shields.io/badge/Version-1.0.0-yellowgreen"/> <img src="https://img.shields.io/badge/Javascript-ES2020-yellow"/>
 
-Description of seleniumJs
+Little framework webdriver in javascript.
+
+This framework has been written in javascript ES2020
  
 ### Prerequisites
 
- For use this framework/package you should to install nodeJs on your platform
+ For use this package you should to install nodeJs on your platform
 
-- nodeJs >= 10.16.3
+- nodeJs >= 12.14.1
 - [phoenixnap.com/kb/install-node-js-npm-on-windows](https://phoenixnap.com/kb/install-node-js-npm-on-windows)
 - [nodejs.org/en/](https://nodejs.org/en/)
 
@@ -22,33 +22,70 @@ Description of seleniumJs
 
 ### installation 
 
-#### Import from npm package
+#### Import from npm repository package
 
 ``
-$ npm install webdriver-js-devgnode
+$ npm i webdriver-js-devgnode
 ``
 
 ```javascript
-const seleniumJs = require("webdriver-js-devgnode");
+const {GeckoDriver}     = require("webdriver-js-devgnode");
+const {ChromeDriver}    = require("webdriver-js-devgnode");
+const {FirefoxOptions}  = require("webdriver-js-devgnode");
 
-seleniumJs.GeckoDriver;
-seleniumJs.GeckoOptions;
-
+new GeckoDriver( );
+new ChromeDriver();
 ```
 
-#### From git clone
+### Exporable object
+
+#### Drivers
+
+- GeckoDriver
+- ChromeDriver
+- OperaDriver
+
+#### Locator
+
+- By
+
+#### Capabilities
+
+- FirefoxOptions
+- ChromeOptions
+- OperaOptions
+- EdgesOptions
+
+#### Waiter
+
+- Waiter
+
+#### ExpectedConditions
+
+- Dev in progress...
+
+#### Another Basic POJO
+
+- Cookie
+- Dimension
+- Point
+- Rect
+- Proxy
+ 
+
+#### From git clone ( localhost )
 
 ``
 $ git clone https://github.com/devGnode/seleniumJs.git
 ``
 
 ```javascript
-const seleniumJs = require("./lib/main.js");
+const seleniumJs = require("./webdriver-js-devgnode.js");
 ```
 
 ## Import Object
 
-WebDriver :
+#### WebDriver :
 
 import path :
 ``
@@ -58,7 +95,8 @@ import path :
 - GeckoDriver
 - ChromeDriver
 - OperaDriver
-- MSedgeDriver
+- EdgesDriver : dev in progress ...
+- Waiter
 
 ```javascript
 const {GeckoDriver} = require("./import/GeckoDriver.js");
@@ -66,17 +104,17 @@ const {GeckoDriver} = require("./import/GeckoDriver.js");
 let driver = new GeckoDriver();
 ```
 
-Options ( desired capabilities ) :
+#### Options ( desired capabilities ) :
 
 import path :
 ``
  ./import/
 ``
 
-- GeckOptions
+- GeckoOptions
 - ChromeOptions
 - OperaOptions
-- MsedgeOptions
+- EdgesOptions  : dev in progress ....
 
 ```javascript
 const {GeckoDriver}  = require("./import/GeckoDriver.js");
@@ -112,7 +150,7 @@ var desiredCapabilities = (new GeckoOptions())
 let driver = new GeckoDriver(desiredCapabilities);
 ```
 
-DomElement selector :
+#### DomElement selector :
 
 import path :
 ``
@@ -141,6 +179,48 @@ let input        = await driver.findElement(By.className("q"));
 let searchButton = await driver.findElement(By.xpath("//input[contains(@value,'Recherche Google') and @type='submit']"));
 
 await input.sendKeys("Send message");
+await searchButton.click();
+
+driver.close();
+
+})();
+```
+#### Waiter
+
+import path :
+``
+ ./import/
+``
+
+```javascript
+const {GeckoDriver}  = require("./import/GeckoDriver.js");
+const {GeckoOptions} = require("./import/options/GeckoOptions.js");
+const {By}           = require("./import/locator/By.js");
+const {Waiter}       = require("./import/Waiter.js");
+
+(async()=>{
+
+var desiredCapabilities = (new GeckoOptions())
+        .setBrowserName("firefox")
+        .setAcceptUntrustedCertificates(true)
+        .setCapability("acceptSslCerts",true);
+
+let driver      = new GeckoDriver(desiredCapabilities);
+let shortWait   = new Waiter(driver,10);
+
+await driver.open();
+await driver.get("https://google.uk");
+
+let input        = await driver.findElement(By.className("q"));
+let searchButton = shortWait.until(async driver=>{
+    try{
+        return await driver.findElement(By.xpath("//input[contains(@value,'Recherche Google') and @type='submit']"));
+    }catch (e) {
+      return false;
+    }
+
+}).sendKeys("Send message");
+
 await searchButton.click();
 
 driver.close();
