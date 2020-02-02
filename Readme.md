@@ -1,6 +1,6 @@
 # seleniumJs
 
-<img src="https://img.shields.io/badge/Version-1.0.8-yellowgreen"/> <img src="https://img.shields.io/badge/Javascript-ES2020-yellow"/> <img src="https://img.shields.io/badge/npm%20package-1.0.8-blue"/>
+<img src="https://img.shields.io/badge/Git version-1.0.8-yellowgreen"/> <img src="https://img.shields.io/github/languages/top/devGnode/SeleniumJs"/> <img src="https://img.shields.io/badge/Javascript-ES2020-yellow"/> <img src="https://img.shields.io/npm/v/webdriver-js-devgnode"/> <img src="https://img.shields.io/node/v/webdriver-js-devgnode"/>
 
 Little framework webdriver in javascript.
 
@@ -324,3 +324,9 @@ driver.close();
 
 })();
 ```
+
+### Not implemented yet
+
+- Manage cookie :  add / get / delete
+- Screenshot : WebDriver / WebElement
+- Expected conditions : <img src="https://img.shields.io/badge/Dev%20status-dev%20in%20progress-green"/>
