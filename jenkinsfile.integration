@@ -9,6 +9,7 @@ timestamps{
     parameters{
         string( name : "BRANCH", defaultValue: 'origin/develop', description: '' )
         string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
+        string( name: "VERSION", defaultValue: "", description: 'Deployment version')
     }
 
     node{
@@ -36,22 +37,35 @@ timestamps{
                 }
 
                 stage("Launched integration test"){
-                    sh "npm install"
-                    testResult = sh(script: "mvn --version", returnValue: true )
-                    if( testResult >= 1 ){
-                        println 'Failed deployment'
-                        println 'processing has terminate with code ${testResult}'
-                    }else{
-                      println 'processing has terminate with code ${testResult}'
+                    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                        sh "npm install"
+                        testResult = sh(script: "npm test", returnValue: true )
+                         if( testResult == null ){
+                            println "processing has terminate with code ${testResult}"
+                         }else{
+                            println "Failed deployment"
+                            println "processing has terminate with code ${testResult}"
+                         }
                     }
-
                 }
 
                 stage("NPM Deployment"){
-                    if(testResult==1){
-                        println 'Failed deployment'
+                    if( testResult == null ){
+                        def deploymentStatus = 0;
+
+                        println "package deployment is in progress"
+                        sh "cat package.json | sed 's/[0-9].*/${VERSION}/g' > out.json && mv --force out.json package.json"
+                        sh "cat package.json | grep version"
+                        sh "git add package.json && git commit -m 'Update - deployment version : ${VERSION}' && git push origin ${BRANCH}"
+
+                        sh "npm --install ."
+                        sh "npm login --registry=http://npm.registry.org/"
+                        deploymentStatus = sh( script : "npm publish", returnValue: true )
+
                     }else{
-                        println 'package deployment in progress'
+                        error("Failed deployment")
+                        println "Failed deployment"
+                        println "processing has terminate with code ${testResult}"
                     }
                 }
             }
