@@ -13,8 +13,8 @@ class ChromeDriver extends AbstractDriver{
 
     static WEB_BROWSER = "CHROME";
 
-    constructor( options ){
-        super(options);
+    constructor( capabilities, driverOpts ){
+        super(capabilities,driverOpts);
 
         let properties = PropertiesFile.getInstance(),
             chrome      = properties.getWebdriverConfig(ChromeDriver.WEB_BROWSER.toLowerCase());

@@ -15,8 +15,8 @@ class GeckoDriver extends AbstractDriver{
     static WEB_BROWSER  = "FIREFOX";
     static BROWSER_TYPE = "gecko";
 
-    constructor( options ){
-        super(options);
+    constructor( capabilities,driverOpts ){
+        super(capabilities,driverOpts);
         
         let properties = PropertiesFile.getInstance(),
             gecko      = properties.getWebdriverConfig(GeckoDriver.BROWSER_TYPE);
