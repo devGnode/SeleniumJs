@@ -16,7 +16,7 @@ This framework has been written in javascript ES2020
 
 ### Branch
 
-- release : Lastest stable version
+- release : lastest stable version
 - develop : Repo to clone ( replace master ) 
 - test-integration : Branch for push unit test(s) file(s)
 
@@ -96,7 +96,7 @@ let crcap = new ChromeOptions()
 
 ##### ExpectedConditions
 
-- Dev in progress...
+- ExpectedConditions <img src="https://img.shields.io/badge/Dev%20status-dev%20in%20progress-green"/> <img src="https://img.shields.io/badge/process-30%25-yellowgreen"/>
 
 ##### Others Basic POJO
 
@@ -327,6 +327,6 @@ driver.close();
 
 ### Not implemented yet
 
-- Manage cookie :  add / get / delete
-- Screenshot : WebDriver / WebElement
-- Expected conditions : <img src="https://img.shields.io/badge/Dev%20status-dev%20in%20progress-green"/>
+- Manage cookie :  add / get / delete <img src="https://img.shields.io/badge/process-0%25-orange"/>
+- Screenshot : WebDriver / WebElement <img src="https://img.shields.io/badge/process-10%25-orange"/>
+- Action Object. <img src="https://img.shields.io/badge/process-0%25-orange"/>
