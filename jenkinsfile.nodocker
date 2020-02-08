@@ -11,7 +11,7 @@ timestamps{
        gitParameter branchFilter: 'origin/(.*)', defaultValue: "${default_branch}", name: 'BRANCH', type: 'PT_BRANCH'
        string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
        string( name: "VERSION", defaultValue: "0.0.0", description : '' )
-       boolean( name: "skippingTest", defaultValue: true, description: '' )
+       booleanParam( name: "skippingTest", defaultValue: true, description: '' )
     }
 
     node{
