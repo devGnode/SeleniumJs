@@ -1,7 +1,7 @@
 {
   "author": "Maroder - <devgnode@gmail.com>",
   "name": "webdriver-js-devgnode",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Webdriver with nodejs front-office testing",
   "repository": {
     "type": "git",
