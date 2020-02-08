@@ -55,9 +55,8 @@ timestamps{
                     sh "cat package.json | grep version"
                     sh "cat package.json | sed 's/[0-9].*/${VERSION}/g' > out.json && mv --force out.json package.json"
                     sh "cat package.json | grep version"
-                    sh "git add package.json && git commit -m 'Update - deployment version : ${VERSION}' && git push origin ${BRANCH}"
 
-                    sh "npm --install ."
+                    sh "npm install ."
                     //sh "npm login --registry=http://npm.registry.org/"
                     deploymentStatus = sh( script : "npm publish", returnValue: true )
                     if(deploymentStatus == null ){
@@ -72,6 +71,10 @@ timestamps{
                         println "processing has terminate with code ${testResult}"
                     }
             }
+        }
+
+        stage("Commit version to develop"){
+            //sh "git add package.json && git commit -m 'Update - deployment version : ${VERSION}' && git push origin ${BRANCH}"
         }
 
     }
