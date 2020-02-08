@@ -14,8 +14,8 @@ class EdgeDriver extends AbstractDriver{
 
     static WEB_BROWSER  = "MSEDGE";
 
-    constructor( options ){
-        super(options);
+    constructor( capabilities, driverOpts ){
+        super(capabilities,driverOpts);
 
         let properties = PropertiesFile.getInstance(),
             edge      = properties.getWebdriverConfig(EdgeDriver.WEB_BROWSER.toLowerCase());

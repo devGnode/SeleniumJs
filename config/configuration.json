@@ -1,5 +1,5 @@
 {
-	
+	"screenOutputDir": "target/screenshots",
 	"bin":{
 		"firefox":    "C:\\Program Files\\Mozilla Firefox\\firefox",
 		"chrome":     null,
@@ -15,22 +15,22 @@
 		
 		"gecko":{
 			"argv":["-vv"],
-			"bin":"c:\\nasm\\geckodriver",
+			"bin":null,
             "logLevel":null
 		},
 		"chrome":{
 			"argv":["--whitelisted-ips","--log-level=ALL"],
-			"bin":"c:\\nasm\\chromedriver",
+			"bin":null,
             "logLevel":"ALL"
 		},
 		"opera":{
 			"argv":["--whitelisted-ips","--log-level=ALL"],
-			"bin":"c:\\nasm\\operadriver",
+			"bin":null,
 			"logLevel":"ALL"
 		},
 		"msedge":{
 			"argv":["--whitelisted-ips"],
-			"bin":"c:\\nasm\\msedgedriver",
+			"bin":null,
 			"logLevel":null
 		}
 	}

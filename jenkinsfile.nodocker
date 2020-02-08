@@ -60,6 +60,7 @@ timestamps{
                     //sh "npm login --registry=http://npm.registry.org/"
                     deploymentStatus = sh( script : "npm publish", returnValue: true )
                     if(deploymentStatus == null ){
+                        manager.addShortText("version ${VERSION}",'white', '#1C76A6', '1px', 'blue')
                         println 'deployment has been publish with successful !'
                     }else{
                         println 'deployment failed !'

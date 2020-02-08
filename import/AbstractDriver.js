@@ -10,14 +10,16 @@
 
 const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 const {JavascriptExecutor}  = require("../lib/js/JavascriptExecutor.js");
+const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {Manage}              = require("../lib/Manage");
 const {Navigate}            = require("../lib/Navigate.js");
 const {WebElement}          = require("../lib/WebElement.js");
 const {Utils}               = require("../lib/utils/Utils.js");
+const {Stream}              = require("../lib/Misc/Stream.js");
 
 class AbstractDriver {
 
-    static #API  = WebDriverRestApi.getInstance();
+    static #API                      = WebDriverRestApi.getInstance();
 
     // private
     #Hmanage;
@@ -26,12 +28,18 @@ class AbstractDriver {
     // protected
     session     = null;
     Hprocess    = null;
-    opts        = null;
 
-    constructor(capabilities){
+    constructor(capabilities,driverOpts){
+
         this.#Hmanage    = new Manage();
         this.#Hnavigate  = new Navigate();
-        this.opts        = capabilities || {getCapabilities:function(){return {};}};
+
+        let prop = PropertiesFile.getInstance().setProperty("capabilities",capabilities||{getCapabilities:function(){return {};}});
+        Stream
+            .of(driverOpts||{})
+            .each((value,key)=>{
+                prop.setProperty(key,value);
+            });
     }
     
     // :void
@@ -41,8 +49,7 @@ class AbstractDriver {
             // webDrive didn't yet launched
             await this.Hprocess.launch();
             await Utils.sleep(1000);
-            await this.launch(this.opts);
-            delete this.opts;
+            await this.launch(PropertiesFile.getInstance().getProperty("capabilities"));
 
             // @private
             // not really a good practice closure
@@ -61,8 +68,10 @@ class AbstractDriver {
         }
     }
 
-    // @protected
-    // :void
+    /***
+     * @protected
+     * @returns void
+     */
     async launch(capabilities){
         let response;
         if((response = await AbstractDriver.#API.open(capabilities)).getStatusCode() === 200 ){
@@ -176,15 +185,13 @@ class AbstractDriver {
     }
 
     /***
-      UnhandledPromiseRejectionWarning: SyntaxError: Unexpected end of JSON input
-      @Unstable
-      @Deprecated
+      @fixed
       @returns {String}
      */
     async getPageSource(){
         let response;
         if((response = await AbstractDriver.#API.getPageSource(this.session)).getStatusCode() === 200 ){
-            return response.getBodyAsObject( ).value;
+            return Buffer.from( response.getBodyAsObject( ).value,"base64").toString("utf8");
         }
         // NoSuchWindow
         throw new Error(response.getError());
@@ -253,6 +260,26 @@ class AbstractDriver {
 
     async executeAsyncScript(){
 
+    }
+
+    /***
+     * @return void
+     */
+    async takeScreenshot(){
+        let response;
+        if((response = await AbstractDriver.#API.screenShot(this.session) ).getStatusCode() === 200 ){
+            try{
+                return await Utils.writeBase64Image(
+                    PropertiesFile.getInstance().getProperty("screenOutputDir"),
+                    null,
+                    response.getBodyAsObject( ).value
+                );
+            }catch (e) {
+                throw new Error(e.message);
+            }
+        }
+        // NoSuchWindow
+        throw new Error(response.getError());
     }
 }
 /***

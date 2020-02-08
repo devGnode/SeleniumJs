@@ -14,8 +14,8 @@ class OperaDriver extends AbstractDriver{
 
     static WEB_BROWSER  = "OPERA";
 
-    constructor( options ){
-        super(options);
+    constructor( capabilities,driverOpts ){
+        super(capabilities,driverOpts);
 
         let properties = PropertiesFile.getInstance(),
             opera      = properties.getWebdriverConfig(OperaDriver.WEB_BROWSER.toLowerCase());
