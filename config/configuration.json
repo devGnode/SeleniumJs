@@ -1,27 +1,34 @@
 {
 	"screenOutputDir": "target/screenshots",
+
+	"loggerParser": 	  "%time\t%name\t: %type :\t%error",
+	"loggerOutputDir":  "target/logs",
+	"saveLog":	 	  true,
+	"logStdout": 		  true,
+	"logLevel": 		  ["ALL"],
+
 	"bin":{
-		"firefox":    "C:\\Program Files\\Mozilla Firefox\\firefox",
+		"firefox":    null,
 		"chrome":     null,
 		"opera":      null,
-		"msedge":     "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
-		
+		"msedge":     null
+
 	},
-	 
+
 	"webDriver":{
-        
+
 		"remoteHost":"127.0.0.1",
 		"remotePort":4444,
-		
+
 		"gecko":{
 			"argv":["-vv"],
 			"bin":null,
-            "logLevel":null
+			"logLevel":null
 		},
 		"chrome":{
 			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":null,
-            "logLevel":"ALL"
+			"logLevel":"ALL"
 		},
 		"opera":{
 			"argv":["--whitelisted-ips","--log-level=ALL"],
@@ -34,5 +41,5 @@
 			"logLevel":null
 		}
 	}
-	
+
 }
