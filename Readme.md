@@ -365,10 +365,18 @@ var elts = await driver.findElements(By.cssSelector("li"));
 ### implemented but not deploy
 
 `` next : 1.0.11``
-- Screenshot : WebDriver / WebElement <img src="https://img.shields.io/badge/Dev%20status-dev%20done-green"/> <img src="https://img.shields.io/badge/process-100%25-green"/>
+
+<img src="https://img.shields.io/badge/Dev%20status-dev%20done-green"/> <img src="https://img.shields.io/badge/process-100%25-green"/>
+
+- Screenshot : WebDriver / WebElement 
 - Stream
+- Logger
+- Manage Cookie : add / get / delete 
 
 ### Not implemented yet
 
-- Manage cookie :  add / get / delete <img src="https://img.shields.io/badge/process-0%25-orange"/>
 - Action Object. <img src="https://img.shields.io/badge/process-0%25-orange"/>
+
+### Issue
+
+- When an Exception is raised, the process of webdriver isn't killed correctly the port stay opened
