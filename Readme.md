@@ -40,6 +40,24 @@ OperaDriver  | For use this webdriver make sure you have define Opera binary pat
 EdgeDriver   | For use this webdriver make sure you have define Edge binary path in these capabilities ,webdriver need of this it for launch the binary.    | \>\= **79.0** 
 <s>IExplorer</s>    | I don't think to implement this webdriver is necessary    | not implemented 
 
+#### WebDriver\( capabilities ***\[, driverOptions \]*** \)
+
+- [Capabilities](https://github.com/devGnode/SeleniumJs#capabilities)
+- driverOptions : override configuration &rarr; [see](https://github.com/devGnode/SeleniumJs#configuration-file)
+    + ***String*** screenOutputDir :
+    + ***Object*** bin : 
+        + ***String*** firefox : binary path 
+        + ***String*** chrome  : binary path
+        + ***String*** opera   : binary path
+        + ***String*** msedge  : binary path
+    + ***Object*** webdriver
+        + ***String*** remoteHost 
+        + ***int*** remotePort   
+            + ***Object*** gecko, chrome, opera, msedge 
+                + ***Array*** args   
+                + ***String*** bin
+                + ***String*** logLevel
+  
 Example :
 
 ```javascript
@@ -128,10 +146,12 @@ This configuration file contains some necessaries attributes for proper operatio
     - bin : Define the full path of web driver binary.
     - logLevel : Define log type  **ALL, DEBUG, INFO, WARNING, SEVERE, OFF**.
 
+it' i's possible to override these properties when you instantiate the web driver simply passing the driver Options in the arguments
+
 Template :
 ```
 {
-	
+	"screenOutputDir": "target/screenshots"
 	"bin":{
 		"firefox":    null,
 		"chrome":     null,
@@ -169,6 +189,7 @@ Template :
 	
 }
 ```
+
 
 ### From git clone ( localhost )
 
@@ -325,8 +346,29 @@ driver.close();
 })();
 ```
 
+### Stream 
+
+```javascript
+ var elts = await driver.findElements(By.cssSelector("a"));
+    elts.stream()
+    .limit(1)
+    .filter(webelement=>webelement.getText()==="i'm a link")
+    .get()[0]
+    .click();
+
+var elts = await driver.findElements(By.cssSelector("li"));
+    elts.stream()
+    .allMatch(webelement=>webelement.getClassName().split(/\s*/).indexOf("class")>-1);
+
+```
+
+### implemented but not deploy
+
+`` next : 1.0.11``
+- Screenshot : WebDriver / WebElement <img src="https://img.shields.io/badge/Dev%20status-dev%20done-green"/> <img src="https://img.shields.io/badge/process-100%25-green"/>
+- Stream
+
 ### Not implemented yet
 
 - Manage cookie :  add / get / delete <img src="https://img.shields.io/badge/process-0%25-orange"/>
-- Screenshot : WebDriver / WebElement <img src="https://img.shields.io/badge/process-10%25-orange"/>
 - Action Object. <img src="https://img.shields.io/badge/process-0%25-orange"/>
