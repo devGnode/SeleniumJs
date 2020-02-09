@@ -35,9 +35,9 @@ class ChromeDriver extends AbstractDriver{
     // :void
     async launch(capabilities){
         try {
-            this.session = (await super.launch(capabilities)).sessionId;
+            super.setSessionId( (await super.launch(capabilities)).sessionId );
         }catch(e){
-            console.log(e);
+            throw new Error(e.message);
         }
     }
 

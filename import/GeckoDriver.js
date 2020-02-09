@@ -34,7 +34,7 @@ class GeckoDriver extends AbstractDriver{
 
 }
 
-/***
-    @export
+ /***
+ @export
 */
 exports.GeckoDriver = GeckoDriver;
