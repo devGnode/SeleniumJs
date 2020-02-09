@@ -10,15 +10,18 @@
 
 const {WebDriverRestApi}    = require("../lib/restApi/WebDriverRestApi.js");
 const {JavascriptExecutor}  = require("../lib/js/JavascriptExecutor.js");
+const {RunTimeException}    = require("../lib/exception/RunTimeException.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
 const {Manage}              = require("../lib/Manage");
 const {Navigate}            = require("../lib/Navigate.js");
 const {WebElement}          = require("../lib/WebElement.js");
 const {Utils}               = require("../lib/utils/Utils.js");
 const {Stream}              = require("../lib/Misc/Stream.js");
+const {Logger}              = require("../lib/Misc/Logger.js");
 
 class AbstractDriver {
 
+    static #logger;
     static #API                      = WebDriverRestApi.getInstance();
 
     // private
@@ -26,22 +29,46 @@ class AbstractDriver {
     #Hnavigate;
 
     // protected
-    session     = null;
+    #session     = null;
     Hprocess    = null;
 
     constructor(capabilities,driverOpts){
 
-        this.#Hmanage    = new Manage();
-        this.#Hnavigate  = new Navigate();
-
         let prop = PropertiesFile.getInstance().setProperty("capabilities",capabilities||{getCapabilities:function(){return {};}});
-        Stream
-            .of(driverOpts||{})
+        Stream.of(driverOpts||{})
             .each((value,key)=>{
                 prop.setProperty(key,value);
             });
+
+        AbstractDriver.#logger = Logger.factory(this.constructor.name);
+        this.#Hmanage          = new Manage(this);
+        this.#Hnavigate        = new Navigate(this);
+
     }
-    
+
+    /***
+     * @return {Logger}
+     */
+    getLogger( ){
+        return AbstractDriver.#logger;
+    }
+
+    /**
+     * @return {String}
+     */
+    getSessionId(){
+        return this.#session;
+    }
+
+    /**
+     * Temporary method, she will be removed
+     * after that webdriver will be launched
+     * @param sessionId
+     */
+    setSessionId(sessionId){
+        this.#session = sessionId;
+    }
+
     // :void
     async open( ){
         try {
@@ -50,22 +77,14 @@ class AbstractDriver {
             await this.Hprocess.launch();
             await Utils.sleep(1000);
             await this.launch(PropertiesFile.getInstance().getProperty("capabilities"));
+            delete this.setSessionId;
 
-            // @private
-            // not really a good practice closure
-            // the legacy of an old development method
-            this.#Hmanage.getSessionId =
-            this.#Hnavigate.getSessionId =
-            this.#Hmanage.timeouts().getSessionId =
-            this.#Hmanage.window().getSessionId = (function(slf) {
-                return function () {
-                    return slf.session;
-                };
-            })(this);
-
+            AbstractDriver.#logger.debug("webDriver has ben launched pid = %s",this.Hprocess.getShellHandle().pid);
+            AbstractDriver.#logger.log("webDriver session id = %s",this.#session);
         }catch (e) {
-            console.log(e);
+            AbstractDriver.#logger.warn(e.message);
         }
+
     }
 
     /***
@@ -76,12 +95,12 @@ class AbstractDriver {
         let response;
         if((response = await AbstractDriver.#API.open(capabilities)).getStatusCode() === 200 ){
             try{
-                this.session = response.getBodyAsObject().value.sessionId;
+                this.#session = response.getBodyAsObject().value.sessionId;
             }catch(e){}
             return response.getBodyAsObject();
         }
         // NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -119,12 +138,12 @@ class AbstractDriver {
      */
     async get(url){
         let response;
-        if((response = await AbstractDriver.#API.get(this.session,url === null || url.length === 0 ? "about:blank" : url)).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.get(this.#session,url === null || url.length === 0 ? "about:blank" : url)).getStatusCode() === 200 ){
+            AbstractDriver.#logger.log("webDriver go to = %s",url);
             return void 0;
         }
         // NoSuchWindow
-        // ff : value.error, other : value.message
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -132,11 +151,11 @@ class AbstractDriver {
      */
     async getCurrentUrl(){
         let response;
-        if((response = await AbstractDriver.#API.getUrl(this.session)).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.getUrl(this.#session)).getStatusCode() === 200 ){
             return response.getBodyAsObject().value || "";
         }
         // NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -144,11 +163,11 @@ class AbstractDriver {
      */
     async getTitle(){
         let response;
-        if((response = await AbstractDriver.#API.getTitle(this.session)).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.getTitle(this.#session)).getStatusCode() === 200 ){
             return response.getBodyAsObject( ).value || "";
         }
         // NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -157,7 +176,7 @@ class AbstractDriver {
      */
     async findElements(By){
         let response;
-        if((response = await AbstractDriver.#API.findElements(this.session,By)).getStatusCode()===200){
+        if((response = await AbstractDriver.#API.findElements(this.#session,By)).getStatusCode()===200){
             return Array.from(
                 response
                     .getBodyAsObject()
@@ -167,7 +186,7 @@ class AbstractDriver {
         }
         // NoSuchWindow
         // NoSuchElement
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -176,12 +195,13 @@ class AbstractDriver {
      */
     async findElement(By){
         let response;
-        if((response=await AbstractDriver.#API.findElement(this.session,By)).getStatusCode()===200){
+        if((response=await AbstractDriver.#API.findElement(this.#session,By)).getStatusCode()===200){
+
             return new WebElement(this,response.getBodyAsObject().value);
         }
         // NoSuchWindow
         // NoSuchElement
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
@@ -190,25 +210,30 @@ class AbstractDriver {
      */
     async getPageSource(){
         let response;
-        if((response = await AbstractDriver.#API.getPageSource(this.session)).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.getPageSource(this.#session)).getStatusCode() === 200 ){
             return Buffer.from( response.getBodyAsObject( ).value,"base64").toString("utf8");
         }
         // NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     async close(){
-
+        let response;
+        if((response = await AbstractDriver.#API.closeWindow(this.#session)).getStatusCode() === 200 ){
+            return void 0;
+        }
+        // NoSuchWindow
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
     /***
      * @returns {boolean}
      */
     async quit(){
-        if(( await AbstractDriver.#API.deleteSession(this.session)).getStatusCode()===200){
+        if(( await AbstractDriver.#API.deleteSession(this.#session)).getStatusCode()===200){
             try {
-                this.process()
-                    .killMessage("process has terminate : "+this.killProcess());
+                //this.process().killMessage("");
+                AbstractDriver.#logger.log("process has terminate with exit status code %s",this.killProcess());
             }catch (e) {}
             return true;
         }
@@ -216,15 +241,15 @@ class AbstractDriver {
     }
 
     async getWindowHandles( ){
-
+        throw new Error("Not implemented yet !");
     }
 
     async getWindowHandle(){
-
+        throw new Error("Not implemented yet !");
     }
 
     async switchTo(){
-
+        throw new Error("Not implemented yet !");
     }
 
     /***
@@ -235,7 +260,7 @@ class AbstractDriver {
 
         try{
             javascriptExecutorData = JavascriptExecutor.executeScript.apply(null,arguments);
-            if((response = await AbstractDriver.#API.executeSyncScript(this.session,javascriptExecutorData)).getStatusCode() === 200 ){
+            if((response = await AbstractDriver.#API.executeSyncScript(this.#session,javascriptExecutorData)).getStatusCode() === 200 ){
 
                 // may be a list of DomElements
                 if( (data = response.getBodyAsObject( ).value) instanceof Array )
@@ -250,16 +275,19 @@ class AbstractDriver {
             }
         }catch(e){
             // TypeError  missing argument to JavascriptExecutor
-            console.log(e);
+            AbstractDriver.#logger.err(e.message);
         }
         //ScriptTimeout
         //JavaScriptError
         //NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 
+    /***
+     * @return {Promise<void>}
+     */
     async executeAsyncScript(){
-
+        throw new Error("Not implemented yet !");
     }
 
     /***
@@ -267,7 +295,7 @@ class AbstractDriver {
      */
     async takeScreenshot(){
         let response;
-        if((response = await AbstractDriver.#API.screenShot(this.session) ).getStatusCode() === 200 ){
+        if((response = await AbstractDriver.#API.screenShot(this.#session) ).getStatusCode() === 200 ){
             try{
                 return await Utils.writeBase64Image(
                     PropertiesFile.getInstance().getProperty("screenOutputDir"),
@@ -279,7 +307,7 @@ class AbstractDriver {
             }
         }
         // NoSuchWindow
-        throw new Error(response.getError());
+        throw new RunTimeException(AbstractDriver.#logger,response.getError());
     }
 }
 /***
