@@ -1,0 +1,82 @@
+#!/usr/bin/env groovy
+import groovy.transform.Field
+
+@Field def lib_repo_url     = "https://github.com/devGnode/lib-repo-groovy.git" as String
+@Field def git_repo_url     = "https://github.com/devGnode/SeleniumJs.git" as String
+@Field def testResult       = 0 as Integer
+@Field def default_branch   = "develop" as String
+
+timestamps{
+    parameters{
+       gitParameter branchFilter: 'origin/(.*)', defaultValue: "${default_branch}", name: 'BRANCH', type: 'PT_BRANCH'
+       string( name: "fileTest", defaultValue: 'test/test.js', description: '' )
+       string( name: "VERSION", defaultValue: "0.0.0", description : '' )
+       booleanParam( name: "skippingTest", defaultValue: true, description: '' )
+    }
+
+    node{
+
+        stage("Clean Workspace"){
+            println "[+] Cleaning Workspace"
+            cleanWs();
+        }
+
+        stage("Git Checkout"){
+            def branch = params.BRANCH.substring(params.BRANCH.indexOf("/")+1)
+
+            println "Checkout to ${branch} branch"
+            checkout scm
+        }
+
+        stage("Launched integration test"){
+            if(!skippingTest) {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    sh "npm install"
+                    testResult = sh(script: "npm test", returnValue: true )
+                    if( testResult == null ){
+                        println "processing has terminate with code ${testResult}"
+                    }else{
+                        println "Failed deployment"
+                        println "processing has terminate with code ${testResult}"
+                    }
+                }
+            }else{
+                testResult = null;
+                println "Skipping test !"
+            }
+        }
+
+        stage("NPM Deployment"){
+         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+               if( testResult == null ){
+                    def deploymentStatus = 0;
+
+                    println "package deployment is in progress"
+                    sh "cat package.json | grep version"
+                    sh "cat package.json | sed 's/[0-9]\\(\\.[0-9]\\)\\{2\\}/${VERSION}/g' > out.json && mv --force out.json package.json"
+                    sh "cat package.json | grep version"
+
+                    sh "npm install ."
+                    //sh "npm login --registry=http://npm.registry.org/"
+                    deploymentStatus = sh( script : "npm publish", returnValue: true )
+                    if(deploymentStatus == null ){
+                        manager.addShortText("version ${VERSION}",'white', '#1C76A6', '1px', 'blue')
+                        println 'deployment has been publish with successful !'
+                    }else{
+                        println 'deployment failed !'
+                    }
+
+                    }else{
+                        error("Failed deployment")
+                        println "Failed deployment"
+                        println "processing has terminate with code ${testResult}"
+                    }
+            }
+        }
+
+        stage("Commit version to develop"){
+            //sh "git add package.json && git commit -m 'Update - deployment version : ${VERSION}' && git push origin ${BRANCH}"
+        }
+
+    }
+}

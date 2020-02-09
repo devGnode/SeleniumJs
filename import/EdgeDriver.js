@@ -1,48 +1,47 @@
 /***
- public Abstract class ChromeDriver
+ public class MsEdge
+
  @author    :   Maroder
- @date      :   17/01/2020
+ @date      :   02/02/2020
  @licence   :   GNU/GPL
  @version   :   1.0
-*/
+ */
 const {AbstractDriver}      = require("./AbstractDriver.js");
 const {PropertiesFile}      = require("../lib/PropertiesFile.js");
-const {WebDriverProcess}    = require("../lib/WebDriverProcess");
+const {WebDriverProcess}    = require("../lib/WebDriverProcess.js");
 
-class ChromeDriver extends AbstractDriver{
+class EdgeDriver extends AbstractDriver{
 
-    static WEB_BROWSER = "CHROME";
+    static WEB_BROWSER  = "MSEDGE";
 
     constructor( capabilities, driverOpts ){
         super(capabilities,driverOpts);
 
         let properties = PropertiesFile.getInstance(),
-            chrome      = properties.getWebdriverConfig(ChromeDriver.WEB_BROWSER.toLowerCase());
+            edge      = properties.getWebdriverConfig(EdgeDriver.WEB_BROWSER.toLowerCase());
         var args = [];
 
-        chrome.argv.forEach(value=>args.push(value));
+        edge.argv.forEach(value=>args.push(value));
         [
-         "--port="+properties.getPort(),
-        
+            "--port="+properties.getPort()
         ].forEach(value=>args.push(value));
 
-        this.Hprocess    = new WebDriverProcess( chrome.bin, args );
-
+        this.Hprocess   = new WebDriverProcess( edge.bin, args );
     }
 
     // @Override
     // @private
     // :void
-    async launch(capabilities){
+    async launch(capabilities) {
         try {
             super.setSessionId( (await super.launch(capabilities)).sessionId );
-        }catch(e){
+        } catch (e) {
             throw new Error(e.message);
         }
     }
 
 }
-/*
-    @export
-*/
-exports.ChromeDriver = ChromeDriver;
+/***
+ @export
+ */
+exports.EdgeDriver = EdgeDriver;

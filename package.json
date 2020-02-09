@@ -1,14 +1,30 @@
 {
-  "name": "seleniumjs",
-  "version": "1.0.0",
-  "description": "webdriver with nodejs",
-  "main": "main.js",
+  "author": "Maroder - <devgnode@gmail.com>",
+  "name": "webdriver-js-devgnode",
+  "version": "1.0.10",
+  "description": "Webdriver with nodejs front-office testing",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devGnode/SeleniumJs.git"
+  },
   "directories": {
     "lib": "lib"
   },
+  "main": "bin/webdriver-js-devgnode.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.js"
   },
-  "author": "Maroder",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "*",
+    "uuid": "^3.4.0"
+  },
+  "bin": {
+    "webdriver-js-devgnode": "./bin/Webdriver-js-devgnode.js"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 12.14.1"
+  },
+  "homepage": "https://github.com/devGnode/SeleniumJs.git#readme"
 }

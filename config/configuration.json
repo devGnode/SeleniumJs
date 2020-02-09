@@ -1,36 +1,45 @@
 {
-	
+	"screenOutputDir": "target/screenshots",
+
+	"loggerParser": 	  "%time\t%name\t: %type :\t%error",
+	"loggerOutputDir":  "target/logs",
+	"saveLog":	 	  true,
+	"logStdout": 		  true,
+	"logLevel": 		  ["ALL"],
+
 	"bin":{
-		"firefox":    "C:\\Program Files\\Mozilla Firefox\\firefox",
+		"firefox":    null,
 		"chrome":     null,
 		"opera":      null,
 		"msedge":     null
-		
+
 	},
-	 
+
 	"webDriver":{
-        
+
 		"remoteHost":"127.0.0.1",
-		"remotePort":4020,
-		
+		"remotePort":4444,
+
 		"gecko":{
 			"argv":["-vv"],
-			"bin":"c:\\nasm\\geckodriver",
-            "logLevel":null
+			"bin":null,
+			"logLevel":null
 		},
 		"chrome":{
-			"argv":["--whitelisted-ips"],
-			"bin":"c:\\nasm\\chromedriver",
-            "logLevel":"ALL"
+			"argv":["--whitelisted-ips","--log-level=ALL"],
+			"bin":null,
+			"logLevel":"ALL"
 		},
 		"opera":{
-			"argv":[],
-			"bin":null
+			"argv":["--whitelisted-ips","--log-level=ALL"],
+			"bin":null,
+			"logLevel":"ALL"
 		},
 		"msedge":{
-			"argv":[],
-			"bin":null
+			"argv":["--whitelisted-ips"],
+			"bin":null,
+			"logLevel":null
 		}
 	}
-	
+
 }
