@@ -406,16 +406,14 @@ var elts = await driver.findElements(By.cssSelector("li"));
 
 ```
 
-### implemented but not deploy
+### implemented 
 
-`` next : 1.1.0``
-
-<img src="https://img.shields.io/badge/Dev%20status-dev%20done-green"/> <img src="https://img.shields.io/badge/process-100%25-green"/>
+`` version : 1.1.0``
 
 - Screenshot : WebDriver / WebElement 
+- Manage Cookie : add / get / delete 
 - Stream
 - Logger
-- Manage Cookie : add / get / delete 
 
 ### Not implemented yet
 
