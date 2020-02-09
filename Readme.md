@@ -1,6 +1,6 @@
 # seleniumJs
 
-<img src="https://img.shields.io/badge/Git version-1.0.8-yellowgreen"/> <img src="https://img.shields.io/github/languages/top/devGnode/SeleniumJs"/> <img src="https://img.shields.io/badge/Javascript-ES2020-yellow"/> <img src="https://img.shields.io/npm/v/webdriver-js-devgnode"/> <img src="https://img.shields.io/node/v/webdriver-js-devgnode"/>
+<img src="https://img.shields.io/badge/Git version-1.1.0-yellowgreen"/> <img src="https://img.shields.io/github/languages/top/devGnode/SeleniumJs"/> <img src="https://img.shields.io/badge/Javascript-ES2020-yellow"/> <img src="https://img.shields.io/npm/v/webdriver-js-devgnode"/> <img src="https://img.shields.io/node/v/webdriver-js-devgnode"/>
 
 Little framework webdriver in javascript.
 
@@ -44,19 +44,23 @@ EdgeDriver   | For use this webdriver make sure you have define Edge binary path
 
 - [Capabilities](https://github.com/devGnode/SeleniumJs#capabilities)
 - driverOptions : override configuration &rarr; [see](https://github.com/devGnode/SeleniumJs#configuration-file)
-    + ***String*** screenOutputDir :
+    + ***String*** loggerParser : Log string parser.
+    + ***String*** loggerOutputDir : Full path of log directory.
+    + ***Boolean*** saveLog : save stdout in file log.
+    + ***Boolean*** logStdout : Display in console error message.
+    + ***Array*** logLevel : ALL,INFO,DEBUG,WARN,ERROR or void array meaning log OFF.
     + ***Object*** bin : 
         + ***String*** firefox : binary path 
         + ***String*** chrome  : binary path
         + ***String*** opera   : binary path
         + ***String*** msedge  : binary path
     + ***Object*** webdriver
-        + ***String*** remoteHost 
-        + ***int*** remotePort   
+        + ***String*** remoteHost : hostname
+        + ***int*** remotePort   : port
             + ***Object*** gecko, chrome, opera, msedge 
                 + ***Array*** args   
-                + ***String*** bin
-                + ***String*** logLevel
+                + ***String*** bin : webdriver executable
+                + ***String*** logLevel : webDriver logLevel
   
 Example :
 
@@ -138,7 +142,16 @@ configuration.json
 
 This configuration file contains some necessaries attributes for proper operation listed below :
 
-- bin : Define the full path of web browser binary ( can be rewrite in capability properties ) 
+- screenOutputDir : ***String*** Define path of screenshots directory *default : "target/screenshots"*
+- loggerParser : ***String*** parser defined
+    + %time : unix timestamps 
+    + %type : ALL,DEBUG,ERROR,INFO,LOG,WARN
+    + %error : Error message to displayed
+- loggerOutputDir : Define path of logs directory.    *default : "target/logs"*
+- logStdout : ***Boolean*** show message in console *default : true*
+- saveLog : ***Boolean*** save log *default : true*
+- logLevel : ***Array*** :  [ void (, ALL,DEBUG,ERROR,INFO,LOG,WARN )] *default : ["ALL"]*
+- bin : ***Object*** Define the full path of web browser binary ( can be rewrite in capability properties ) 
 - remoteHost : Web driver remote host
 - remotePort : Web driver remote port
 - webdriver
@@ -146,37 +159,45 @@ This configuration file contains some necessaries attributes for proper operatio
     - bin : Define the full path of web driver binary.
     - logLevel : Define log type  **ALL, DEBUG, INFO, WARNING, SEVERE, OFF**.
 
-it' i's possible to override these properties when you instantiate the web driver simply passing the driver Options in the arguments
+it's possible to override these properties when you instantiate the web driver simply passing these Options in the arguments of webDriver
 
 Template :
+
 ```
 {
-	"screenOutputDir": "target/screenshots"
+	"screenOutputDir": "target/screenshots",
+
+	"loggerParser":     "%time\t%name\t: %type :\t%error",
+	"loggerOutputDir":  "target/logs",
+	"saveLog":          true,
+	"logStdout":        true,
+	"logLevel":         ["ALL"],
+
 	"bin":{
 		"firefox":    null,
 		"chrome":     null,
 		"opera":      null,
 		"msedge":     null
-		
+
 	},
-	 
+
 	"webDriver":{
-        
+
 		"remoteHost":"127.0.0.1",
 		"remotePort":4444,
-		
+
 		"gecko":{
 			"argv":["-vv"],
 			"bin":null,
-            "logLevel":null
+			"logLevel":null
 		},
 		"chrome":{
-			"argv":["--whitelisted-ips"],
+			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":null,
-            "logLevel":"ALL"
+			"logLevel":"ALL"
 		},
 		"opera":{
-			"argv":["--whitelisted-ips"],
+			"argv":["--whitelisted-ips","--log-level=ALL"],
 			"bin":null,
 			"logLevel":"ALL"
 		},
@@ -186,7 +207,7 @@ Template :
 			"logLevel":null
 		}
 	}
-	
+
 }
 ```
 
@@ -345,6 +366,29 @@ driver.close();
 
 })();
 ```
+### looger
+
+getLogger : ***String*** message [, args ... ]
+
+- log
+- info
+- warn
+- debug
+- error
+
+```javascript
+
+driver.getLogger().log("message");
+driver.getLogger().log("message %s :: %s", "params",125);
+
+```
+
+```
+1581273071079	EdgeDriver	: DEBUG :	webDriver has ben launched pid = 24460
+1581273071098	EdgeDriver	: LOG :	webDriver session id = d0a82e65f565878005ead66fc288a9f0
+1581273074148	EdgeDriver	: LOG :	webDriver go to = https://google.com
+1581273075997	EdgeDriver	: LOG :	webDriver go to = https://google.com/search?q=mdr
+```
 
 ### Stream 
 
@@ -364,7 +408,7 @@ var elts = await driver.findElements(By.cssSelector("li"));
 
 ### implemented but not deploy
 
-`` next : 1.0.11``
+`` next : 1.1.0``
 
 <img src="https://img.shields.io/badge/Dev%20status-dev%20done-green"/> <img src="https://img.shields.io/badge/process-100%25-green"/>
 
@@ -376,6 +420,7 @@ var elts = await driver.findElements(By.cssSelector("li"));
 ### Not implemented yet
 
 - Action Object. <img src="https://img.shields.io/badge/process-0%25-orange"/>
+- Window Handle / create new window / frame
 
 ### Issue
 
