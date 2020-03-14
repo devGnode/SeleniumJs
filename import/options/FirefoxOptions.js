@@ -33,9 +33,11 @@ class FirefoxOptions extends AbstractDriversOptions{
 
     // @return {FirefoxOptions}
     setHeadless(bool){
-        this.setCapability("moz:headless",bool);
-        this.setCapability("headless",bool);
-        super.addArguments("--headless","moz:firefoxOptions");
+        if(bool===true) {
+            this.setCapability("moz:headless", bool);
+            this.setCapability("headless", bool);
+            super.addArguments("--headless", "moz:firefoxOptions");
+        }
         return this;
     }
 
