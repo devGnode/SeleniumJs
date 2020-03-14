@@ -47,7 +47,7 @@ class ChromeOptions extends AbstractDriversOptions{
 
     // @return this
     setHeadless(bool){
-        super.addArguments("--headless","goog:chromeOptions");
+        bool === true ? super.addArguments("--headless","goog:chromeOptions") : void 0;
         return this;
     }
 

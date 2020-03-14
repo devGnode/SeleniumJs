@@ -48,8 +48,9 @@ class Waiter{
         Logger.logStdout = Logger.saveLog = true;
 
         if( ( returned === undefined || returned === null || returned === false ) ){
+            Waiter.#Logger.error(`waiter until : TimeoutException : you have reached the time limit of ${this.#seconds} second(s)`);
             Waiter.#Logger.error("%s - %s","expectedConditions fail",lastError.getStackTrace());
-            throw new RunTimeException(Waiter.#Logger,`waiter until : TimeoutException : you have reached the time limit of ${this.#seconds} second(s)`);
+            throw new RunTimeException(null,`waiter until : TimeoutException : you have reached the time limit of ${this.#seconds} second(s)`);
         }
 
         return returned;
